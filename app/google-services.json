@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "646707877760",
+    "firebase_url": "https://dota-picker-4b84c.firebaseio.com",
+    "project_id": "dota-picker-4b84c",
+    "storage_bucket": "dota-picker-4b84c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:646707877760:android:e503a664e657716b",
+        "android_client_info": {
+          "package_name": "com.example.kyle.dotapicker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "646707877760-fneg32c513hjvcar57dccd9317932vie.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7spD_GtGL2rgmVs5HTdOPVXw5PYv-sxk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

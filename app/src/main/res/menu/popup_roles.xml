@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/carry_role"
+        android:title="Carry"
+        android:titleCondensed="1" />
+    <item
+        android:id="@+id/support_role"
+        android:title="Support"
+        android:titleCondensed="2" />
+    <item
+        android:id="@+id/offlane_role"
+        android:title="Offlane"
+        android:titleCondensed="3" />
+    <item
+        android:id="@+id/jungle_role"
+        android:title="Jungle"
+        android:titleCondensed="4" />
+    <item
+        android:id="@+id/mid_role"
+        android:title="Mid"
+        android:titleCondensed="5" />
+    <item
+        android:id="@+id/roaming_role"
+        android:title="Roaming"
+        android:titleCondensed="6"/>
+    <item
+        android:id="@+id/initiator_role"
+        android:title="Initiator"
+        android:titleCondensed="7"/>
+    <item
+        android:id="@+id/pusher_role"
+        android:title="Pushing"
+        android:titleCondensed="8"/>
+    <item
+        android:id="@+id/disabler_role"
+        android:title="Disabler"
+        android:titleCondensed="9"/>
+
+    <item
+        android:id="@+id/all"
+        android:title="All Roles"
+        android:titleCondensed="0"/>
+</menu>

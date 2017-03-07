@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_home"
+        android:title="@string/menu_home"
+        android:icon="@drawable/ic_notifications_black"
+        />
+
+    <item
+        android:id="@+id/add_enemy_button"
+        android:title="@string/add_enemy"
+        android:icon="@drawable/icon_add_hero"
+        />
+
+    <item
+        android:id="@+id/menu_search"
+        android:title="@string/menu_search"
+        android:icon="@drawable/ic_reset"
+        />
+
+    <item
+        android:id="@+id/add_ally_button"
+        android:title="@string/add_ally"
+        android:icon="@drawable/icon_add_hero"
+        />
+
+    <item
+        android:id="@+id/role_selector"
+        android:title="@string/role_selector"
+        android:icon="@drawable/ic_search_black" />
+</menu>

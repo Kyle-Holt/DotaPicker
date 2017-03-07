@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item android:id="@+id/action_search"
+        android:title="Search"
+        android:icon="@drawable/ic_search_black"
+        app:showAsAction="collapseActionView|always"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:layout_width="wrap_content" />
+    <item
+        android:id="@+id/oneohtwo"
+        android:title="Abaddon"
+        android:titleCondensed="102" />
+    <item
+        android:id="@+id/seventhree"
+        android:title="Alchemist"
+        android:titleCondensed="73" />
+    <item
+        android:id="@+id/sixtyeight"
+        android:title="Ancient Apparition"
+        android:titleCondensed="68" />
+    <item
+        android:id="@+id/one"
+        android:title="Anti-Mage"
+        android:titleCondensed="1" />
+    <item
+        android:id="@+id/oneonethree"
+        android:title="Arc Warden"
+        android:titleCondensed="113" />
+    <item
+        android:id="@+id/two"
+        android:title="Axe"
+        android:titleCondensed="2"/>
+    <item
+        android:id="@+id/three"
+        android:title="Bane"
+        android:titleCondensed="3"/>
+    <item
+        android:id="@+id/sixfive"
+        android:title="Batrider"
+        android:titleCondensed="65" />
+    <item
+        android:id="@+id/threeeight"
+        android:title="Beastmaster"
+        android:titleCondensed="38" />
+    <item
+        android:id="@+id/four"
+        android:title="Bloodseeker"
+        android:titleCondensed="4"/>
+    <item
+        android:id="@+id/sixtwo"
+        android:title="Bounty Hunter"
+        android:titleCondensed="62" />
+    <item
+        android:id="@+id/seveneight"
+        android:title="Brewmaster"
+        android:titleCondensed="78" />
+    <item
+        android:id="@+id/ninenine"
+        android:title="Bristleback"
+        android:titleCondensed="99" />
+    <item
+        android:id="@+id/sixone"
+        android:title="Broodmother"
+        android:titleCondensed="61" />
+    <item
+        android:id="@+id/ninesix"
+        android:title="Centaur Warrunner"
+        android:titleCondensed="96" />
+    <item
+        android:id="@+id/eightone"
+        android:title="Chaos Knight"
+        android:titleCondensed="81" />
+    <item
+        android:id="@+id/sixsix"
+        android:title="Chen"
+        android:titleCondensed="66" />
+    <item
+        android:id="@+id/fivesix"
+        android:title="Clinkz"
+        android:titleCondensed="56" />
+    <item
+        android:id="@+id/fiveone"
+        android:title="Clockwerk"
+        android:titleCondensed="51" />
+    <item
+        android:id="@+id/five"
+        android:title="Crystal Maiden"
+        android:titleCondensed="5"/>
+    <item
+        android:id="@+id/fivefive"
+        android:title="Dark Seer"
+        android:titleCondensed="55" />
+    <item
+        android:id="@+id/fifty"
+        android:title="Dazzle"
+        android:titleCondensed="50" />
+    <item
+        android:id="@+id/fourthree"
+        android:title="Death Prophet"
+        android:titleCondensed="43" />
+    <item
+        android:id="@+id/eightseven"
+        android:title="Disruptor"
+        android:titleCondensed="87" />
+    <item
+        android:id="@+id/sixnine"
+        android:title="Doom"
+        android:titleCondensed="69" />
+    <item
+        android:id="@+id/fournine"
+        android:title="Dragon Knight"
+        android:titleCondensed="49" />
+    <item
+        android:id="@+id/six"
+        android:title="Drow Ranger"
+        android:titleCondensed="6"/>
+    <item
+        android:id="@+id/oneohseven"
+        android:title="Earth Spirit"
+        android:titleCondensed="107" />
+    <item
+        android:id="@+id/seven"
+        android:title="Earthshaker"
+        android:titleCondensed="7"/>
+    <item
+        android:id="@+id/oneohthree"
+        android:title="Elder Titan"
+        android:titleCondensed="103" />
+    <item
+        android:id="@+id/oneohsix"
+        android:title="Ember Spirit"
+        android:titleCondensed="106" />
+    <item
+        android:id="@+id/fiveeight"
+        android:title="Enchantress"
+        android:titleCondensed="58" />
+    <item
+        android:id="@+id/threethree"
+        android:title="Enigma"
+        android:titleCondensed="33" />
+    <item
+        android:id="@+id/fourone"
+        android:title="Faceless Void"
+        android:titleCondensed="41" />
+    <item
+        android:id="@+id/seventwo"
+        android:title="Gyrocopter"
+        android:titleCondensed="72" />
+    <item
+        android:id="@+id/fivenine"
+        android:title="Huskar"
+        android:titleCondensed="59" />
+    <item
+        android:id="@+id/sevenfour"
+        android:title="Invoker"
+        android:titleCondensed="74" />
+    <item
+        android:id="@+id/nineone"
+        android:title="Io"
+        android:titleCondensed="91" />
+    <item
+        android:id="@+id/sixfour"
+        android:title="Jakiro"
+        android:titleCondensed="64" />
+    <item
+        android:id="@+id/eight"
+        android:title="Juggernaut"
+        android:titleCondensed="8"/>
+    <item
+        android:id="@+id/ninety"
+        android:title="Keeper of the Light"
+        android:titleCondensed="90" />
+    <item
+        android:id="@+id/twothree"
+        android:title="Kunkka"
+        android:titleCondensed="23" />
+    <item
+        android:id="@+id/oneohfour"
+        android:title="Legion Commander"
+        android:titleCondensed="104" />
+    <item
+        android:id="@+id/fivetwo"
+        android:title="Leshrac"
+        android:titleCondensed="52" />
+    <item
+        android:id="@+id/threeone"
+        android:title="Lich"
+        android:titleCondensed="31" />
+    <item
+        android:id="@+id/fivefour"
+        android:title="Lifestealer"
+        android:titleCondensed="54" />
+    <item
+        android:id="@+id/twofive"
+        android:title="Lina"
+        android:titleCondensed="25" />
+    <item
+        android:id="@+id/twosix"
+        android:title="Lion"
+        android:titleCondensed="26" />
+    <item
+        android:id="@+id/eighty"
+        android:title="Lone Druid"
+        android:titleCondensed="80" />
+    <item
+        android:id="@+id/foureight"
+        android:title="Luna"
+        android:titleCondensed="48" />
+    <item
+        android:id="@+id/seveseven"
+        android:title="Lycan"
+        android:titleCondensed="77" />
+    <item
+        android:id="@+id/nineseven"
+        android:title="Magnus"
+        android:titleCondensed="97" />
+    <item
+        android:id="@+id/ninefour"
+        android:title="Medusa"
+        android:titleCondensed="94" />
+    <item
+        android:id="@+id/eighttwo"
+        android:title="Meepo"
+        android:titleCondensed="82" />
+    <item
+        android:id="@+id/nine"
+        android:title="Mirana"
+        android:titleCondensed="9"/>
+    <item
+        android:id="@+id/oneonefour"
+        android:title="Monkey King"
+        android:titleCondensed="114" />
+    <item
+        android:id="@+id/ten"
+        android:title="Morphling"
+        android:titleCondensed="10"/>
+    <item
+        android:id="@+id/eightnine"
+        android:title="Naga Siren"
+        android:titleCondensed="89"/>
+    <item
+        android:id="@+id/fivethree"
+        android:title="Nature's Prophet"
+        android:titleCondensed="53"/>
+    <item
+        android:id="@+id/threesix"
+        android:title="Necrophos"
+        android:titleCondensed="36"/>
+    <item
+        android:id="@+id/sixty"
+        android:title="Night Stalker"
+        android:titleCondensed="60"/>
+    <item
+        android:id="@+id/eighteight"
+        android:title="Nyx Assassin"
+        android:titleCondensed="88"/>
+    <item
+        android:id="@+id/eightfour"
+        android:title="Ogre Magi"
+        android:titleCondensed="84"/>
+    <item
+        android:id="@+id/fiveseven"
+        android:title="Omniknight"
+        android:titleCondensed="57"/>
+    <item
+        android:id="@+id/oneoneone"
+        android:title="Oracle"
+        android:titleCondensed="111"/>
+    <item
+        android:id="@+id/sevensix"
+        android:title="Outworld Devourer"
+        android:titleCondensed="76"/>
+    <item
+        android:id="@+id/fourfour"
+        android:title="Phantom Assassin"
+        android:titleCondensed="44"/>
+    <item
+        android:id="@+id/twelve"
+        android:title="Phantom Lancer"
+        android:titleCondensed="12"/>
+    <item
+        android:id="@+id/oneten"
+        android:title="Phoenix"
+        android:titleCondensed="110"/>
+    <item
+        android:id="@+id/thirteen"
+        android:title="Puck"
+        android:titleCondensed="13"/>
+    <item
+        android:id="@+id/fourteen"
+        android:title="Pudge"
+        android:titleCondensed="14"/>
+    <item
+        android:id="@+id/fourfive"
+        android:title="Pugna"
+        android:titleCondensed="45"/>
+    <item
+        android:id="@+id/threenine"
+        android:title="Queen of Pain"
+        android:titleCondensed="39"/>
+    <item
+        android:id="@+id/fifteen"
+        android:title="Razor"
+        android:titleCondensed="15"/>
+    <item
+        android:id="@+id/threetwo"
+        android:title="Riki"
+        android:titleCondensed="32"/>
+    <item
+        android:id="@+id/eightsix"
+        android:title="Rubick"
+        android:titleCondensed="86"/>
+    <item
+        android:id="@+id/sixteen"
+        android:title="Sand King"
+        android:titleCondensed="16"/>
+    <item
+        android:id="@+id/sevennine"
+        android:title="Shadow Demon"
+        android:titleCondensed="79"/>
+    <item
+        android:id="@+id/eleven"
+        android:title="Shadow Fiend"
+        android:titleCondensed="11"/>
+    <item
+        android:id="@+id/twoseven"
+        android:title="Shadow Shaman"
+        android:titleCondensed="27"/>
+    <item
+        android:id="@+id/sevenfive"
+        android:title="Silencer"
+        android:titleCondensed="75"/>
+    <item
+        android:id="@+id/oneohone"
+        android:title="Skywrath Mage"
+        android:titleCondensed="101"/>
+    <item
+        android:id="@+id/twoeight"
+        android:title="Slardar"
+        android:titleCondensed="28"/>
+    <item
+        android:id="@+id/ninethree"
+        android:title="Slark"
+        android:titleCondensed="93"/>
+    <item
+        android:id="@+id/threefive"
+        android:title="Sniper"
+        android:titleCondensed="35"/>
+    <item
+        android:id="@+id/sixseven"
+        android:title="Spectre"
+        android:titleCondensed="67"/>
+    <item
+        android:id="@+id/sevenone"
+        android:title="Spirit Breaker"
+        android:titleCondensed="71"/>
+    <item
+        android:id="@+id/seventeen"
+        android:title="Storm Spirit"
+        android:titleCondensed="17"/>
+    <item
+        android:id="@+id/eighteen"
+        android:title="Sven"
+        android:titleCondensed="18"/>
+    <item
+        android:id="@+id/oneohfive"
+        android:title="Techies"
+        android:titleCondensed="105"/>
+    <item
+        android:id="@+id/foursix"
+        android:title="Templar Assassin"
+        android:titleCondensed="46"/>
+    <item
+        android:id="@+id/oneohnine"
+        android:title="Terrorblade"
+        android:titleCondensed="109"/>
+    <item
+        android:id="@+id/twonine"
+        android:title="Tidehunter"
+        android:titleCondensed="29"/>
+    <item
+        android:id="@+id/nineeight"
+        android:title="Timbersaw"
+        android:titleCondensed="98"/>
+    <item
+        android:id="@+id/threefour"
+        android:title="Tinker"
+        android:titleCondensed="34"/>
+    <item
+        android:id="@+id/nineteen"
+        android:title="Tiny"
+        android:titleCondensed="19"/>
+    <item
+        android:id="@+id/eightthree"
+        android:title="Treant Protector"
+        android:titleCondensed="83"/>
+    <item
+        android:id="@+id/ninefive"
+        android:title="Troll Warlord"
+        android:titleCondensed="95"/>
+    <item
+        android:id="@+id/onehundred"
+        android:title="Tusk"
+        android:titleCondensed="100"/>
+    <item
+        android:id="@+id/oneoheight"
+        android:title="Underlord"
+        android:titleCondensed="108"/>
+    <item
+        android:id="@+id/eightfive"
+        android:title="Undying"
+        android:titleCondensed="85"/>
+    <item
+        android:id="@+id/seventy"
+        android:title="Ursa"
+        android:titleCondensed="70"/>
+    <item
+        android:id="@+id/twenty"
+        android:title="Vengeful Spirit"
+        android:titleCondensed="20"/>
+    <item
+        android:id="@+id/fourty"
+        android:title="Venomancer"
+        android:titleCondensed="40"/>
+    <item
+        android:id="@+id/fourseven"
+        android:title="Viper"
+        android:titleCondensed="47"/>
+    <item
+        android:id="@+id/ninetwo"
+        android:title="Visage"
+        android:titleCondensed="92"/>
+    <item
+        android:id="@+id/threeseven"
+        android:title="Warlock"
+        android:titleCondensed="37"/>
+    <item
+        android:id="@+id/sixthree"
+        android:title="Weaver"
+        android:titleCondensed="63"/>
+    <item
+        android:id="@+id/twoone"
+        android:title="Windranger"
+        android:titleCondensed="21"/>
+    <item
+        android:id="@+id/oneonetwo"
+        android:title="Winter Wyvern"
+        android:titleCondensed="112"/>
+    <item
+        android:id="@+id/thirty"
+        android:title="Witch Doctor"
+        android:titleCondensed="30"/>
+    <item
+        android:id="@+id/fourtwo"
+        android:title="Wraith King"
+        android:titleCondensed="42"/>
+    <item
+        android:id="@+id/twotwo"
+        android:title="Zeus"
+        android:titleCondensed="22"/>
+
+</menu>

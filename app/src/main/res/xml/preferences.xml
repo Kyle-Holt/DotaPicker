@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/user_id_header">
+
+      <!--  <CheckBoxPreference
+            android:key="checkbox_preference"
+            android:title="@string/title_checkbox_preference"
+            android:defaultValue="@string/default_checkbox_preference"/>-->
+
+        <EditTextPreference
+            android:key="edittext_preference"
+            android:title="@string/user_id_option_text"
+            android:inputType="number"
+            android:defaultValue="0"
+            android:summary=""
+            android:dialogTitle="@string/enter_user_id" />
+
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/bayes_constant_header">
+
+        <ListPreference
+            android:key="bayes_preference"
+            android:title="@string/bayes_constant_title"
+            android:dialogTitle="@string/enter_bayes_constant"
+            android:summary="%s"
+            android:defaultValue="3"
+            android:entries="@array/entries_list_preference"
+            android:entryValues="@array/entryvalues_list_preference" />
+
+
+    </PreferenceCategory>
+
+
+ <!--   <PreferenceCategory
+        android:title="@string/title_second_section">
+
+    <PreferenceCategory
+        android:title="@string/box_constant_header">
+
+        <ListPreference
+            android:key="box_preference"
+            android:title="@string/box_constant_title"
+            android:summary="%s"
+            android:dialogTitle="@string/enter_box_constant"
+            android:entries="@array/boxsize_list_preference"
+            android:entryValues="@array/boxsizevalues_list_preference" />
+
+
+    </PreferenceCategory>
+
+        <Preference
+            android:title="@string/title_intent_preference">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://codepath.com/" />
+        </Preference>
+
+    <ListPreference
+        android:key="edit_text_bayes_constant"
+        android:title="@string/bayes_constant_title"
+        android:summary="%s"
+        android:entries="@array/bayes_list_entries"
+        android:entriesValues="@array/bayes_list_values"
+        android:defaultValue="3"
+        android:dialogTitle="@string/enter_bayes_constant" />
+    </PreferenceCategory>-->
+
+
+</PreferenceScreen>

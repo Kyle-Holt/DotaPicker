@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Dota Picker</string>
+    <string name="menu_home">Win %</string>
+    <string name="menu_search">Reset</string>
+    <string name="add_enemy">Add Enemy</string>
+    <string name="add_ally">Add Ally</string>
+    <string name="menu_notifications">Settings</string>
+    <string name="open_weather_maps_app_id">11111</string>
+    <string name="ally">Allies</string>
+    <string name="enemy">Enemies</string>
+    <string name="menu_settings">Settings</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="box_constant_title">Change hero box size</string>
+    <string name="box_constant_header">Hero box size</string>
+    <string name="enter_box_constant">How large do you want the hero boxes?</string>
+    <string name="bayes_constant_header">Statistics sensitivity</string>
+    <string name="bayes_constant_title">Change effect of population statistics</string>
+    <string name="enter_bayes_constant">How many games to learn a hero? (Default: 3)</string>
+    <string name="enter_user_id">Enter your user ID</string>
+    <string name="enter_user_id_subtext">Number in your open dota user page url</string>
+    <string name="user_id_option_text">Your Dota user ID</string>
+    <string name="role_selector">All Roles</string>
+    <string name="user_id_header">User ID</string>
+
+
+
+    <string name="title_checkbox_preference">title_checkbox</string>
+
+    <string name="search_hint">Search heroes</string>
+    <string name="title_activity_alt_search">AltSearchActivity</string>
+
+</resources>

@@ -4,35 +4,94 @@
     android:layout_height="wrap_content"
     android:padding="2dp">
 
-    <!-- Thumbnail Image -->
-    <ImageView
-        android:id="@+id/thumbnail"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_toRightOf="@+id/total_rating"
-        android:paddingTop="10dp"
-        android:layout_marginRight="50dp" />
-
     <!-- Hero name -->
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/total_rating"
+        android:layout_alignParentLeft="true"
         android:textSize="@dimen/hero_name"
         android:textColor="@color/hero_name"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:paddingBottom="1dp"/>
+
+    <!-- Thumbnail Image -->
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="53dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/title" />
+
+    <!--total header-->
+    <TextView
+        android:id="@+id/total_header"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:textColor="@color/white"
+        android:textSize="@dimen/hero_name"
+        android:textStyle="bold"
+        android:paddingLeft="50dp"
+        android:paddingRight="30dp"/>
+
+    <!--total rating-->
+    <TextView
+        android:id="@+id/total_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:paddingLeft="40dp"
+        android:layout_centerVertical="true"
+        android:textColor="@color/hero_name"
+        android:textSize="@dimen/total_rating" />
 
     <!-- ally header -->
     <TextView
         android:id="@+id/ally_header"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="1dip"
-        android:layout_toRightOf="@+id/thumbnail"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
         android:textSize="@dimen/hero_name"
         android:textStyle="bold"/>
+
+    <!-- ally Rating -->
+    <TextView
+        android:id="@+id/allyBayes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ally_header"
+        android:paddingTop="5dp"
+        android:paddingLeft="10dp"
+        android:layout_alignLeft="@id/ally_header"
+        android:textColor="@color/hero_name"
+        android:textSize="@dimen/hero_name" />
+
+    <!--synergy -->
+    <TextView
+        android:id="@+id/synergy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/allyBayes"
+        android:paddingLeft="10dp"
+        android:layout_alignLeft="@id/ally_header"
+        android:textColor="@color/hero_name"
+        android:textSize="@dimen/hero_name"
+        android:paddingTop="5dp"/>
+
+    <!--enemy header -->
+    <TextView
+        android:id="@+id/enemy_header"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/hero_name"
+        android:textStyle="bold"
+        android:paddingRight="10dp"/>
 
     <!-- enemy Rating -->
     <TextView
@@ -41,71 +100,26 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/enemy_header"
         android:textColor="@color/hero_name"
+        android:paddingTop="5dp"
         android:textSize="@dimen/hero_name"
         android:layout_alignLeft="@id/enemy_header"/>
-
-    <!-- ally Rating -->
-    <TextView
-        android:id="@+id/allyBayes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ally_header"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:textColor="@color/hero_name"
-        android:textSize="@dimen/hero_name" />
 
     <!--advantage -->
     <TextView
         android:id="@+id/advantage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/enemyBayes"
         android:textColor="@color/hero_name"
         android:textSize="@dimen/hero_name"
+        android:paddingTop="5dp"
         android:layout_alignLeft="@id/enemy_header"/>
 
-    <!--synergy -->
-    <TextView
-        android:id="@+id/synergy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/allyBayes"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:textColor="@color/hero_name"
-        android:textSize="@dimen/hero_name" />
 
-    <!--enemy header -->
-    <TextView
-        android:id="@+id/enemy_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/hero_name"
-        android:textSize="@dimen/hero_name"
-        android:textStyle="bold"
-        android:paddingRight="10dp"/>
 
-    <!--total rating-->
-    <TextView
-        android:id="@+id/total_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/total_header"
-        android:layout_alignParentLeft="true"
-        android:textColor="@color/hero_name"
-        android:textSize="@dimen/total_rating" />
 
-    <!--total header-->
-    <TextView
-        android:id="@+id/total_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:textColor="@color/hero_name"
-        android:textSize="@dimen/hero_name"
-        android:textStyle="bold"/>
+
+
 
 
 

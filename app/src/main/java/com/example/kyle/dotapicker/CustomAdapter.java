@@ -20,11 +20,15 @@ import static com.example.kyle.dotapicker.MainActivity.Ah_id1;
 import static com.example.kyle.dotapicker.MainActivity.Ah_id2;
 import static com.example.kyle.dotapicker.MainActivity.Ah_id3;
 import static com.example.kyle.dotapicker.MainActivity.Ah_id4;
+import static com.example.kyle.dotapicker.MainActivity.Ah_id5;
 import static com.example.kyle.dotapicker.MainActivity.Eh_id1;
 import static com.example.kyle.dotapicker.MainActivity.Eh_id2;
 import static com.example.kyle.dotapicker.MainActivity.Eh_id3;
 import static com.example.kyle.dotapicker.MainActivity.Eh_id4;
 import static com.example.kyle.dotapicker.MainActivity.Eh_id5;
+import static com.example.kyle.dotapicker.MainActivity.has_started;
+import static com.example.kyle.dotapicker.MainActivity.short_text;
+import static com.example.kyle.dotapicker.MainActivity.user_stats;
 
 /**
  * Created by Kyle on 2/15/2017.
@@ -33,7 +37,7 @@ public class CustomAdapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
     private List<Hero> heroList;
-    DecimalFormat numberFormat = new DecimalFormat("#.00");
+    DecimalFormat numberFormat = new DecimalFormat("#0.0");
 
 
     public CustomAdapter(Activity activity, List<Hero> heroList) {
@@ -64,7 +68,11 @@ public class CustomAdapter extends BaseAdapter {
 
         SpannableStringBuilder sb;
         SpannableStringBuilder db;
-
+        double alliedWR;
+        double enemyWR;
+        String adv_string;
+        String syn_string;
+        String win_string;
 
         if (inflater == null)
             inflater = (LayoutInflater) activity
@@ -84,6 +92,13 @@ public class CustomAdapter extends BaseAdapter {
         TextView total_header = (TextView) convertView.findViewById(R.id.total_header);
 
         Hero h = heroList.get(position);
+        if(user_stats) {
+            alliedWR = h.getBayesAlliedWR();
+            enemyWR = h.getBayesEnemyWR();
+        } else {
+            alliedWR = h.getUnbiasedAlliedWR();
+            enemyWR = h.getUnbiasedEnemyWR();
+        }
 
         // thumbnail image
         image.setImageResource(h.getIcon());
@@ -101,38 +116,68 @@ public class CustomAdapter extends BaseAdapter {
         ally_header.setText("Stats with Allies");
 
         // set total rating
-        if(Ah_id1 + Ah_id2 + Ah_id3 + Ah_id4 == 0){
-            sb = determineColor((h.getBayesEnemyWR()*100), "", "%", 50);
-            db = checkColor((h.getBayesEnemyWR()*100), sb, 0);
+        if(Ah_id1 + Ah_id2 + Ah_id3 + Ah_id4 + Ah_id5 == 0){
+            sb = determineColor((enemyWR*100), "", "%", 50);
+            db = checkColor((enemyWR*100), sb, 0);
         } else if(Eh_id1 + Eh_id2 + Eh_id3 + Eh_id4 + Eh_id5 == 0){
-            sb = determineColor((h.getBayesAlliedWR()*100), "", "%", 50);
-            db = checkColor((h.getBayesAlliedWR()*100), sb, 0);
+            sb = determineColor((alliedWR*100), "", "%", 50);
+            db = checkColor((alliedWR*100), sb, 0);
         } else {
-            sb = determineColor((h.getBayesAlliedWR()*100+ h.getBayesEnemyWR()*100)/2, "", "%", 50);
-            db = checkColor((h.getBayesAlliedWR()*100+ h.getBayesEnemyWR()*100)/2, sb, 0);
+            sb = determineColor((alliedWR*100+ enemyWR*100)/2, "", "%", 50);
+            db = checkColor((alliedWR*100+ enemyWR*100)/2, sb, 0);
         }
         total_rating.setText(db);
 
+        if(short_text){
+            win_string = "Win: ";
+        } else {
+            win_string = "Adj. Win: ";
+        }
+
         // get ally rating
-        sb = determineColor(h.getBayesAlliedWR()*100, "Adj. Win %: ", "%", 50);
-        db = checkColor(h.getBayesAlliedWR()*100, sb, 0);
-        ally_bayes.setText(db);
+        if(has_started == true) {
+            sb = determineColor(alliedWR*100, win_string, "%", 50);
+            db = checkColor(alliedWR*100, sb, 0);
+            ally_bayes.setText(db);
+        } else {
+            sb = determineColor(0.0, win_string, "%", 50);
+            db = checkColor(0.0, sb, 0);
+            ally_bayes.setText(db);
+        }
+
 
         // get enemy rating
-        sb = determineColor(h.getBayesEnemyWR()*100, "Adj. Win %: ", "%", 50);
-        db = checkColor(h.getBayesEnemyWR()*100, sb, 0);
-        enemy_bayes.setText(db);
+        if(has_started == true) {
+            sb = determineColor(enemyWR * 100, win_string, "%", 50);
+            db = checkColor(enemyWR * 100, sb, 0);
+            enemy_bayes.setText(db);
+        } else {
+            sb = determineColor(0, win_string, "%", 50);
+            db = checkColor(0, sb, 0);
+            enemy_bayes.setText(db);
+        }
 
+        //has_started = true;
 
         // set advantage
+        if(short_text){
+            adv_string = "Adv: ";
+        } else {
+            adv_string = "Advantage: ";
+        }
         if(h.getAdvantage() != null) {
-            sb = determineColor(h.getAdvantage(), "Advantage: ", "%", 0);
+            sb = determineColor(h.getAdvantage(), adv_string, "%", 0);
             adv.setText(sb);
         }
 
         // set synergy
+        if(short_text){
+            syn_string = "Syn: ";
+        } else {
+            syn_string = "Synergy: ";
+        }
         if(h.getSynergy() != null) {
-            sb = determineColor(h.getSynergy(), "Synergy: ", "%", 0);
+            sb = determineColor(h.getSynergy(), syn_string, "%", 0);
             syn.setText(sb);
         }
 
@@ -163,7 +208,7 @@ public class CustomAdapter extends BaseAdapter {
         SpannableStringBuilder db = new SpannableStringBuilder(str);
         if(hero_stat == check) {
             fcs = new ForegroundColorSpan(Color.parseColor("#888888"));
-            db.setSpan(fcs, 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            db.setSpan(fcs, sb.length()-4, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             return db;
         }
         return sb;

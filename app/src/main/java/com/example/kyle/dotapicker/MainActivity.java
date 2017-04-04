@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,6 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.kyle.dotapicker.R.id.enemy_advantage;
+import static com.example.kyle.dotapicker.R.id.enemy_win;
 import static com.example.kyle.dotapicker.R.xml.preferences;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -52,6 +55,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView Ally4;
     ImageView Ally5;
 
+    TextView heroListHeader;
+    TextView heroListName;
+    TextView heroListWAllies;
+    TextView heroListTotal;
+    TextView heroListVEnemies;
+    TextView heroListColor;
+
+
     TextView allyHeader;
     TextView enemyHeader;
     TextView allySynergy;
@@ -63,11 +74,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     StringBuffer urlString;
     StatsCalculator sc;
     DataBaseHelper myDb;
+    MenuItem action_switch;
     private BottomNavigationView mBottomBar;
     private ListView mListView1;
     private CustomAdapter adapter;
 
-    Integer hero_id;
+    Integer hero_id = 0;
     public static Integer Eh_id1 = 0;
     public static Integer Eh_id2 = 0;
     public static Integer Eh_id3 = 0;
@@ -81,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static Integer Ah_id5 = 0;
 
     public static String user_id = "0";
+    int reload_table_count = 0;
     public static int bayes_constant = 3;
     public int count = 0;
     final public static int hero_pool_size = 115;
@@ -89,11 +102,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     double enemy_team_advantage = 0;
     double enemy_team_synergy = 0;
     int selected_role = 0;
+    public int alliedCount = 0;
+    public int enemyCount = 0;
     String strRole = "";
     static String against_hero = "heroes?against_hero_id=";
     static String with_hero =  "heroes?with_hero_id=";
     boolean role_selected = false;
     public static boolean setting_changed = false;
+    public static boolean has_started = false;
+    public static boolean user_stats = true;
+    public static boolean short_text = false;
+    public static boolean tables_loaded = false;
 
     double[][] str = new double[hero_pool_size][hero_pool_size];
     double[][] str_win = new double[hero_pool_size][hero_pool_size];
@@ -107,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     double[][] Win_vs_enemies_table = new double[hero_pool_size][hero_pool_size];
     double[][] Win_with_allies_table = new double[hero_pool_size][hero_pool_size];
     int[][] hero_role = new int[hero_pool_size][11];
+    double[][] dummy_zero_array = new double[hero_pool_size][hero_pool_size];
+    double[] populationWinRates = new double[hero_pool_size];
     Map<Integer, double[]> hero_map = new HashMap<>();
 
     public static String[] names = new String[hero_pool_size];
@@ -114,9 +135,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static int[] images = new int[hero_pool_size];
     public int[] allied_heroes;
     public int[] enemy_heroes;
+    public ImageView[] alliedIcons = new ImageView[5];
+    public ImageView[] enemyIcons = new ImageView[5];
     List<Hero> selectedHeroList = new ArrayList<>();
     List<Hero> heroListCopy = new ArrayList<>();
     private List<Hero> heroList = new ArrayList<Hero>();
+    private Map<Integer, List<Integer>> heroPopulationRates;
+    Map<Integer, Double> populationWR;
+    Map<Integer, List<Integer>> chosenHeroStats;
+    public static Hero chosenHero;
+    public boolean normal = false;
+    public boolean high = false;
+    public boolean veryHigh = false;
 
     //Methods necsesary for Android
     @Override
@@ -131,16 +161,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PreferenceManager.setDefaultValues(this, preferences, false);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
+        myDb = new DataBaseHelper(this);
+        sc = new StatsCalculator();
         //user_id = String.valueOf(prefs.getString("edittext_preference", "default_value"));
         //user_id = String.valueOf(prefs.getString("edittext_preference", "default_value"));
         loadData();
 
-        myDb = new DataBaseHelper(this);
 
-        Advantage_table = myDb.advantageTableBuilder("Advantages");
-        Synergy_table = myDb.advantageTableBuilder("Synergies");
-        Win_vs_enemies_table = myDb.advantageTableBuilder("Win_vs_enemies");
-        Win_with_allies_table = myDb.advantageTableBuilder("Win_synergies");
         hero_role = myDb.roleTableBuilder("Heroes");
 
         allied_heroes = new int[5];
@@ -151,6 +178,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addHeroImages(images);
         addHeroNames(names);
         addHeroSubNames(subnames);
+
+        Log.d("HEROPOPRATES", String.valueOf("1"));
 
         Enemy1 = (ImageView) findViewById(R.id.enemy1);
         Enemy1.setOnClickListener(this);
@@ -174,27 +203,78 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Ally5 = (ImageView) findViewById(R.id.ally5);
         Ally5.setOnClickListener(this);
 
+        setUpLongClickListenersAndHeroRemoval();
+
+        action_switch = (MenuItem) findViewById(R.id.action_switch_mode);
+
+        heroListColor = (TextView) findViewById(R.id.list_color);
+        heroListName = (TextView) findViewById(R.id.list_name);
+        heroListHeader = (TextView) findViewById(R.id.list_hero);
+        heroListTotal = (TextView) findViewById(R.id.list_total);
+        heroListWAllies = (TextView) findViewById(R.id.list_with_allies);
+        heroListVEnemies = (TextView) findViewById(R.id.list_with_enemies);
+
         allySynergy = (TextView) findViewById(R.id.allied_synergy);
         allyAdvantage = (TextView) findViewById(R.id.allied_advantage);
         enemySynergy = (TextView) findViewById(R.id.enemy_synergy);
-        enemyAdvantage = (TextView) findViewById(R.id.enemy_advantage);
+        enemyAdvantage = (TextView) findViewById(enemy_advantage);
         allyWin = (TextView) findViewById(R.id.allied_win);
-        enemyWin = (TextView) findViewById(R.id.enemy_win);
+        enemyWin = (TextView) findViewById(enemy_win);
         allyHeader = (TextView) findViewById(R.id.Ally_text);
         enemyHeader = (TextView) findViewById(R.id.Enemy_text);
 
         mListView1 = (ListView)findViewById(R.id.listView1);
 
+        if (prefs.getBoolean("pref_short_text", true)) {
+            short_text = true;
+        }
+
         setUpTeamAdvantagesAndSynergies();
+        initiateHeroJsonRetrieval("0", Ally5, against_hero);
 
         adapter = new CustomAdapter(this, heroList);
 
         mListView1.setAdapter(adapter);
 
-        Log.d("USER_ID", user_id);
-        Log.d("Bayes Constant", String.valueOf(bayes_constant));
+        mListView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
 
-        sc = new StatsCalculator();
+                loadData();
+                Log.d("UserID", user_id);
+
+                Toast.makeText(getApplicationContext(), String.valueOf(heroList.get(position).getName()) + " selected. Now displaying population statistics",
+                        Toast. LENGTH_LONG).show();
+
+                //user_id = "0";
+                user_stats = false;
+                adapter.notifyDataSetChanged();
+                Ally5.setImageResource(images[heroList.get(position).getId()]);
+                Ah_id5 = heroList.get(position).getId();
+                chosenHero = new Hero(names[Ah_id5],images[Ah_id5], Ah_id5, subnames[Ah_id5]);
+                allied_heroes[4] = Ah_id5;
+                heroList.remove(chosenHero);
+                count++;
+                reorder(false);
+                Ah_id5 = initiateHeroJsonRetrieval(String.valueOf(Ah_id5), Ally5, with_hero);
+
+                //setUpTeamAdvantagesAndSynergies();
+
+
+
+                has_started = true;
+                //setChosenHeroWinRates(Ah_id5);
+                //this may have to be a user setting
+
+
+
+
+            }
+        });
+
+        Log.d("USER_ID", user_id);
+        Log.d("USER_ID", String.valueOf(hero_id));
+        Log.d("Bayes Constant", String.valueOf(bayes_constant));
 
         mBottomBar.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -267,6 +347,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
     }
 
+
+
     private class MyOnMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
         private MenuItem item;
 
@@ -299,12 +381,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent myIntent;
         switch (item.getItemId()) {
             case R.id.menu_settings:
-                Intent myIntent = new Intent(MainActivity.this,
+                myIntent = new Intent(MainActivity.this,
                         PreferencesActivity.class);
                 startActivity(myIntent);
                 return true;
+            case R.id.menu_help:
+                myIntent = new Intent(MainActivity.this,
+                        HelpActivity.class);
+                startActivity(myIntent);
+                return true;
+            /*case R.id.menu_credits:
+                myIntent = new Intent(MainActivity.this,
+                        AboutActivity.class);
+                startActivity(myIntent);
+                return true;
+                */
+            case R.id.action_switch_mode:
+                //if(has_started){
+                    user_stats = !user_stats;
+                    adapter.notifyDataSetChanged();
+                    count++;
+                    reorder(false);
+                    if(user_stats) {
+                        //item.setTitle("User stats");
+                        Toast.makeText(getApplicationContext(), "Now displaying user statistics",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        //item.setTitle("Pop Stats");
+                        Toast.makeText(getApplicationContext(), "Now displaying population statistics",
+                                Toast.LENGTH_SHORT).show();
+                    }
+               // } else {
+
+               // }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -321,11 +433,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             clear();
         }
+        if(key.equals("skill_setting_preference")){
+            tables_loaded = false;
+            clear();
+        }
+        if(key.equals("time_setting_preference")){
+            tables_loaded = false;
+            clear();
+        }
     }
 
     //Methods for handling the on-click to Json requests
     @Override
     public void onClick(View v) {
+        has_started = true;
         Intent searchIntent = new Intent(MainActivity.this,
                 SearchActivity.class);
 
@@ -360,13 +481,198 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivityForResult(searchIntent, 9);
                 break;
             case R.id.ally5:
-                Toast.makeText(getApplicationContext(), "This is your hero", Toast.LENGTH_SHORT).show();
+                if(Ah_id5 == 0){
+                    Toast.makeText(getApplicationContext(), "This is your hero. Please select from the list.", Toast.LENGTH_SHORT).show();
+                } else if((Ah_id1 + Ah_id2 + Ah_id3 + Ah_id4 == 0)&&(Eh_id1 + Eh_id2 + Eh_id3 + Eh_id4 + Eh_id5 == 0)) {
+                    Toast.makeText(getApplicationContext(), "Hero unselected. Now displaying your statistics.", Toast.LENGTH_SHORT).show();
+                    user_stats = true;
+                    //action_switch.setTitle("USER STATS");
+                    Ally5.setImageResource(0);
+                    Ah_id5 = 0;
+                    allied_heroes[4] = 0;
+                    setUpTeamAdvantagesAndSynergies();
+                    chosenHero = null;
+                    heroList.clear();
+                    adapter.notifyDataSetChanged();
+                    //has_started = true;
+                    //setChosenHeroWinRates(Ah_id5);
+                    //this may have to be a user setting
+                    loadData();
+                    initiateHeroJsonRetrieval("0", Ally5, against_hero);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Hero unselected. Now displaying your statistics.", Toast.LENGTH_SHORT).show();
+                    user_stats = true;
+                    //action_switch.setTitle("USER STATS");
+                    boolean allyFilled = false;
+                    int heroSpace = getFirstFilledHeroSpace(enemy_heroes);
+                    if(heroSpace == -1) {
+                        heroSpace = getFirstFilledHeroSpace(allied_heroes);
+                        allyFilled = true;
+                    }
+                    Log.d("ALLYFILLED", String.valueOf(allyFilled));
+                    Log.d("Herospace", String.valueOf(heroSpace));
+                    Ally5.setImageResource(0);
+                    Ah_id5 = 0;
+                    allied_heroes[4] = 0;
+                    setUpTeamAdvantagesAndSynergies();
+                    chosenHero = null;
+                    heroList.clear();
+                    adapter.notifyDataSetChanged();
+                    define_heroes();
+                    loadData();
+                    if(!allyFilled){
+                        initiateHeroJsonRetrieval(String.valueOf(enemy_heroes[heroSpace]), enemyIcons[heroSpace], against_hero);
+                    } else {
+                        initiateHeroJsonRetrieval(String.valueOf(allied_heroes[heroSpace]), alliedIcons[heroSpace], with_hero);
+                    }
+
+                }
+
                 break;
 
             default:
 
                 break;
         }
+    }
+
+    public void deleteHeroIconReturnToList() {
+        boolean allyFilled = false;
+        int heroSpace = getFirstFilledHeroSpace(enemy_heroes);
+        if(heroSpace == -1) {
+            heroSpace = getFirstFilledHeroSpace(allied_heroes);
+            allyFilled = true;
+            if(heroSpace == -1) {
+                heroSpace = 0;
+            }
+        }
+        setUpTeamAdvantagesAndSynergies();
+        heroList.clear();
+        adapter.notifyDataSetChanged();
+        define_heroes();
+        loadData();
+        if(!allyFilled){
+            initiateHeroJsonRetrieval(String.valueOf(enemy_heroes[heroSpace]), enemyIcons[heroSpace], against_hero);
+        } else {
+            initiateHeroJsonRetrieval(String.valueOf(allied_heroes[heroSpace]), alliedIcons[heroSpace], with_hero);
+        }
+    }
+
+    public void setUpLongClickListenersAndHeroRemoval() {
+        Enemy1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(Eh_id1 != 0) {
+                    Eh_id1 = 0;
+                    Enemy1.setImageResource(0);
+                    enemy_heroes[0] = 0;
+                    deleteHeroIconReturnToList();
+                }
+                return true;
+            }
+        });
+        Enemy2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(Eh_id2 != 0) {
+                    Eh_id2 = 0;
+                    Enemy2.setImageResource(0);
+                    enemy_heroes[1] = 0;
+                    deleteHeroIconReturnToList();
+                }
+                return true;
+            }
+        });
+        Enemy3.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(Eh_id3 != 0) {
+                    Toast.makeText(getApplicationContext(), "Showing all heroes",
+                            Toast.LENGTH_SHORT).show();
+                    Eh_id3 = 0;
+                    Enemy3.setImageResource(0);
+                    enemy_heroes[2] = 0;
+                    deleteHeroIconReturnToList();
+                }
+                return true;
+            }
+        });
+        Enemy4.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(Eh_id4 != 0) {
+                    Toast.makeText(getApplicationContext(), "Showing all heroes",
+                            Toast.LENGTH_SHORT).show();
+                    Eh_id4 = 0;
+                    Enemy4.setImageResource(0);
+                    enemy_heroes[3] = 0;
+                    deleteHeroIconReturnToList();
+                }
+                return true;
+            }
+        });
+        Enemy5.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(Eh_id5 != 0) {
+                    Toast.makeText(getApplicationContext(), "Showing all heroes",
+                            Toast.LENGTH_SHORT).show();
+                    Eh_id5 = 0;
+                    Enemy5.setImageResource(0);
+                    enemy_heroes[4] = 0;
+                    deleteHeroIconReturnToList();
+                }
+                return true;
+            }
+        });
+        Ally1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(Ah_id1 != 0) {
+                    Ah_id1 = 0;
+                    Ally1.setImageResource(0);
+                    allied_heroes[0] = 0;
+                    deleteHeroIconReturnToList();
+                }
+                return true;
+            }
+        });
+        Ally2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(Ah_id2 != 0) {
+                    Ah_id2 = 0;
+                    Ally2.setImageResource(0);
+                    allied_heroes[1] = 0;
+                    deleteHeroIconReturnToList();
+                }
+                return true;
+            }
+        });
+        Ally3.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(Ah_id3 != 0) {
+                    Ah_id3 = 0;
+                    Ally3.setImageResource(0);
+                    allied_heroes[2] = 0;
+                    deleteHeroIconReturnToList();
+                }
+                return true;
+            }
+        });
+        Ally4.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(Ah_id4 != 0) {
+                    Ah_id4 = 0;
+                    Ally4.setImageResource(0);
+                    allied_heroes[3] = 0;
+                    deleteHeroIconReturnToList();
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -425,7 +731,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public int initiateHeroJsonRetrieval(String result, ImageView image, String hero_team) {
         int box_position = Integer.valueOf(result);
         hero_id = Integer.valueOf(result);
-        image.setImageResource(images[box_position]);
         urlString = new StringBuffer("https://api.opendota.com/api/players");
 
         if((!user_id.equals(""))&&(!user_id.equals("default_value"))){
@@ -433,11 +738,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             urlString.append("/0");
         }
+        if(hero_id == 0){
+            urlString.append("/heroes?");
+            new JsonTask().execute(urlString.toString());
+        } else {
+            image.setImageResource(images[box_position]);
+            urlString.append("/" + hero_team);
+            urlString.append(hero_id.toString());
+            new JsonTask().execute(urlString.toString());
 
-        urlString.append("/" + hero_team);
-        urlString.append(hero_id.toString());
-        new JsonTask().execute(urlString.toString());
-
+        }
+        Log.d("URL", String.valueOf(urlString));
         return box_position;
     }
 
@@ -504,11 +815,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPostExecute(Map<Integer,List<Integer>> result) {
         super.onPostExecute(result);
         if (result != null) {
+
+            Log.d("USERID", user_id);
+
             temp = sc.getHeroMap(result, hero_id);
+
             double[][] temp2 = new double[hero_pool_size][hero_pool_size];
             double[][] temp3 = new double[hero_pool_size][hero_pool_size];
 
             temp2 = sc.getHeroWinMap(result, hero_id);
+
             temp3 = sc.getHeroLossMap(result, hero_id);
 
 
@@ -517,8 +833,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ally_str[i][hero_id] = temp[i][hero_id];
                     ally_str_win[i][hero_id] = temp2[i][hero_id];
                     ally_str_loss[i][hero_id] = temp3[i][hero_id];
+
                 }
             } else if (urlString.toString().contains(against_hero)) {
+                for (int i = 1; i < hero_pool_size; i++) {
+                    str[i][hero_id] = temp[i][hero_id];
+                    str_win[i][hero_id] = temp2[i][hero_id];
+                    str_loss[i][hero_id] = temp3[i][hero_id];
+
+                }
+            } else{
                 for (int i = 1; i < hero_pool_size; i++) {
                     str[i][hero_id] = temp[i][hero_id];
                     str_win[i][hero_id] = temp2[i][hero_id];
@@ -533,14 +857,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             enemy_heroes = new int[5];
 
             define_heroes();
+            //populationWR = getHeroWinRates(heroPopulationRates);
 
             for (int i = 1; i < hero_pool_size; i++) {
                 if (i != 24) {
-                    heroList.add(new Hero(names[i], images[i], i, hero_map.get(i)[0] + hero_map.get(i)[1], hero_map.get(i)[0], hero_map.get(i)[1],
-                            totalAdvantage(i, Advantage_table, enemy_heroes), totalAdvantage(i, Synergy_table, allied_heroes),
-                            getBayesWR(i, Win_with_allies_table, allied_heroes, ally_str_win, ally_str_loss), getBayesWR(i, Win_vs_enemies_table, enemy_heroes, str_win, str_loss)));
+                    if(hero_id != 0){
+
+                        heroList.add(new Hero(names[i], images[i], i, hero_map.get(i)[0] + hero_map.get(i)[1], hero_map.get(i)[0], hero_map.get(i)[1],
+                                totalAdvantage(i, Advantage_table, enemy_heroes), totalAdvantage(i, Synergy_table, allied_heroes),
+                                getBayesWR(i, Win_with_allies_table, allied_heroes, ally_str_win, ally_str_loss), getBayesWR(i, Win_vs_enemies_table, enemy_heroes, str_win, str_loss),
+                                getBayesWR(i, Win_with_allies_table, allied_heroes, dummy_zero_array, dummy_zero_array), getBayesWR(i, Win_vs_enemies_table, enemy_heroes, dummy_zero_array, dummy_zero_array)));
+                    } else {
+                        heroList.add(new Hero(names[i], images[i], i, (20*populationWinRates[getCorrectId(i)]/100 + hero_map.get(i)[2])/(20 +  hero_map.get(i)[3]+ hero_map.get(i)[2]),
+                                (20*populationWinRates[getCorrectId(i)]/100 + hero_map.get(i)[2])/(20 + hero_map.get(i)[3]+ hero_map.get(i)[2]),
+                                populationWinRates[getCorrectId(i)]/100, populationWinRates[getCorrectId(i)]/100));
+                    }
+
                 }
             }
+
+            //errorCheckHeroTablesLoaded(heroList);
+
 
             List<Hero> dupeHeroList = new ArrayList<>();
 
@@ -556,6 +893,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             updateSelectedHeroesList(Ah_id4, dupeHeroList);
 
             heroList.removeAll(dupeHeroList);
+            heroList.remove(chosenHero);
 
             heroListCopy.clear();
 
@@ -571,12 +909,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             count++;
             reorder(false);
 
+            errorCheckHeroTablesLoaded(heroList);
+
             setUpTeamAdvantagesAndSynergies();
+
+            define_heroes();
+
+
         } else {
             Toast.makeText(getApplicationContext(), "Json request failed. Please try again.",
                     Toast.LENGTH_SHORT).show();
         }
 
+        }
+    }
+
+    private void errorCheckHeroTablesLoaded(List<Hero> heroList) {
+        Hero last = heroList.get(heroList.size() - 1);
+        if(last.getBayesAlliedWR() != 0) {
+            Log.d("IS NOT 0", "ALLIES 0");
+        } else {
+            Log.d("IS 0", "ALLIES 0");
+            Toast.makeText(getApplicationContext(), "Data not loaded correctly, attempting to reload.",
+                    Toast.LENGTH_SHORT).show();
+            reload_table_count += 1;
+            if(reload_table_count < 3) {
+                tables_loaded = false;
+                clear();
+            } else {
+            }
         }
     }
 
@@ -589,8 +950,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return -1;
     }
 
+    public int getFirstFilledHeroSpace(int[] hero_array) {
+        for(int i = 0; i < hero_array.length; i++) {
+            if(hero_array[i] != 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     //Methods for calculating hero and team statistics
-    private void setUpTeamAdvantagesAndSynergies() {
+    private SpannableStringBuilder[] setUpTeamAdvantagesAndSynergies() {
 
         CustomAdapter ca = new CustomAdapter();
         SpannableStringBuilder team_synergy;
@@ -600,12 +970,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SpannableStringBuilder team_win;
         SpannableStringBuilder enemy_win;
         SpannableStringBuilder sb;
-        int alliedCount = 0;
-        int enemyCount = 0;
+        alliedCount = 0;
+        enemyCount = 0;
         int enemyHeroCount = 0;
         int heroCount = 0;
         int allySum = 0;
         int enemySum = 0;
+        String adv_string;
+        String syn_string;
+
+
 
         for(int i = 0; i < allied_heroes.length; i++) {
             if(allied_heroes[i] != 0) {
@@ -615,6 +989,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 enemyCount++;
             }
         }
+
+        Log.d("AHID5", String.valueOf(alliedCount));
         heroCount = alliedCount + enemyCount - 1;
         enemyHeroCount = alliedCount + enemyCount - 1;
 
@@ -628,6 +1004,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             enemyHeroCount -= 1;
         }
 
+        //to get adjusted win, this would be a modified allied_heroes array
+        //we would then calculate for the chosen hero specifically - probably by using the method with a single hero
+        //then running through the remaining methods and adding it in individually
         List<int[]> hero_pairs = getAllHeroCombinationsOnTeam(allied_heroes);
         List<int[]> hero_to_enemy_pairs = getEnemyPairs(allied_heroes, enemy_heroes);
         List<int[]> enemy_pairs = getAllHeroCombinationsOnTeam(enemy_heroes);
@@ -648,10 +1027,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         double remainder = 100 - (newWin + newToEnemyWin) - (enemy_Win + enemyToAllyWin);
         double percentageAlly = (newWin + newToEnemyWin)/((newWin + newToEnemyWin) + (enemy_Win + enemyToAllyWin));
 
-        team_synergy = ca.determineColor(newSynergy, "Synergy: ", "%", 0);
-        enemy_synergy_value = ca.determineColor(enemy_synergy, "Synergy: ", "%", 0);
-        team_advantage = ca.determineColor(newAdvantage, "Advantage: ", "%", 0);
-        enemy_advantage = ca.determineColor(enemy_Advantage, "Advantage: ", "%", 0);
+        if (short_text) {
+            adv_string = "Adv: ";
+            syn_string = "Syn: ";
+            allySynergy.setPadding(5,0,0,0);
+            enemySynergy.setPadding(5,0,0,0);
+            //allyAdvantage.setGravity(Gravity.CENTER_HORIZONTAL);
+            //enemyAdvantage.setGravity(Gravity.CENTER_HORIZONTAL);
+        } else {
+            adv_string = "Advantage: ";
+            syn_string = "Synergy: ";
+        }
+        team_synergy = ca.determineColor(newSynergy, syn_string, "%", 0);
+        enemy_synergy_value = ca.determineColor(enemy_synergy, syn_string, "%", 0);
+        team_advantage = ca.determineColor(newAdvantage, adv_string, "%", 0);
+        enemy_advantage = ca.determineColor(enemy_Advantage, adv_string, "%", 0);
 
         if(Double.isNaN(newWin + newToEnemyWin + remainder*percentageAlly)){
             sb = ca.determineColor(0, "Win: ", "%", 50);
@@ -668,42 +1058,73 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             enemy_win = ca.checkColor(enemy_Win + enemyToAllyWin + remainder*(1-percentageAlly), sb, 0);
         }
 
+        Log.d("TRUE", "IN THE METHOD");
+
+        SpannableStringBuilder[] team_stats = new SpannableStringBuilder[6];
+        team_stats[0] = team_synergy;
+        team_stats[1] = enemy_synergy_value;
+        team_stats[2] = team_advantage;
+        team_stats[3] = enemy_advantage;
+        team_stats[4] = team_win;
+        team_stats[5] = enemy_win;
+
         allySynergy.setText(team_synergy);
         enemySynergy.setText(enemy_synergy_value);
         allyAdvantage.setText(team_advantage);
         enemyAdvantage.setText(enemy_advantage);
         allyWin.setText(team_win);
         enemyWin.setText(enemy_win);
+
+        return team_stats;
     }
 
     public Map totalHeroRating(double[][] hero_array, double[][] ally_array, double[][] ally_str_win, double[][] ally_str_loss, double[][] str_win, double[][] str_loss){
         Map<Integer, double[]> hero_map = new HashMap<>();
 
-        for(int i = 1; i < hero_array.length; i++) {
-            double friendly = ally_array[i][Ah_id1] + ally_array[i][Ah_id2] + ally_array[i][Ah_id3] +
-                    ally_array[i][Ah_id4] + ally_array[i][Ah_id5];
-            double ally_win = ally_str_win[i][Ah_id1] + ally_str_win[i][Ah_id2] + ally_str_win[i][Ah_id3] +
-                    ally_str_win[i][Ah_id4] + ally_str_win[i][Ah_id5];
-            double ally_loss = ally_str_loss[i][Ah_id1] + ally_str_loss[i][Ah_id2] + ally_str_loss[i][Ah_id3] +
-                    ally_str_loss[i][Ah_id4] + ally_str_loss[i][Ah_id5];
-            double enemy = hero_array[i][Eh_id1] + hero_array[i][Eh_id2] + hero_array[i][Eh_id3] +
-                    hero_array[i][Eh_id4] + hero_array[i][Eh_id5];
-            double enemy_win = str_win[i][Eh_id1] + str_win[i][Eh_id2] + str_win[i][Eh_id3] +
-                    str_win[i][Eh_id4] + str_win[i][Eh_id5];
-            double enemy_loss = str_loss[i][Eh_id1] + str_loss[i][Eh_id2] + str_loss[i][Eh_id3] +
-                    str_loss[i][Eh_id4] + str_loss[i][Eh_id5];
+        if(hero_id != 0) {
+            for(int i = 1; i < hero_array.length; i++) {
+                double friendly = ally_array[i][Ah_id1] + ally_array[i][Ah_id2] + ally_array[i][Ah_id3] +
+                        ally_array[i][Ah_id4] + ally_array[i][Ah_id5];
+                double ally_win = ally_str_win[i][Ah_id1] + ally_str_win[i][Ah_id2] + ally_str_win[i][Ah_id3] +
+                        ally_str_win[i][Ah_id4] + ally_str_win[i][Ah_id5];
+                double ally_loss = ally_str_loss[i][Ah_id1] + ally_str_loss[i][Ah_id2] + ally_str_loss[i][Ah_id3] +
+                        ally_str_loss[i][Ah_id4] + ally_str_loss[i][Ah_id5];
+                double enemy = hero_array[i][Eh_id1] + hero_array[i][Eh_id2] + hero_array[i][Eh_id3] +
+                        hero_array[i][Eh_id4] + hero_array[i][Eh_id5];
+                double enemy_win = str_win[i][Eh_id1] + str_win[i][Eh_id2] + str_win[i][Eh_id3] +
+                        str_win[i][Eh_id4] + str_win[i][Eh_id5];
+                double enemy_loss = str_loss[i][Eh_id1] + str_loss[i][Eh_id2] + str_loss[i][Eh_id3] +
+                        str_loss[i][Eh_id4] + str_loss[i][Eh_id5];
 
-            double[] totals = new double[7];
-            totals[0] = friendly;
-            totals[1] = enemy;
-            totals[2] = enemy_win;
-            totals[3] = enemy_loss;
-            totals[4] = ally_win;
-            totals[5] = ally_loss;
+                double[] totals = new double[7];
+                totals[0] = friendly;
+                totals[1] = enemy;
+                totals[2] = enemy_win;
+                totals[3] = enemy_loss;
+                totals[4] = ally_win;
+                totals[5] = ally_loss;
 
-            hero_map.put(i,totals);
+                hero_map.put(i,totals);
+            }
+            return hero_map;
+        } else {
+            for(int i = 1; i < hero_array.length; i++) {
+                double enemy = hero_array[i][0];
+                double enemy_win = str_win[i][0];
+                double enemy_loss = str_loss[i][0];
+                double[] totals = new double[7];
+                totals[0] = 0;
+                totals[1] = enemy;
+                totals[2] = enemy_win;
+                totals[3] = enemy_loss;
+                totals[4] = 0;
+                totals[5] = 0;
+
+                hero_map.put(i,totals);
+            }
+            return hero_map;
         }
-        return hero_map;
+
     }
 
     public double totalAdvantage(int i, double[][] doubTable, int[] selected_heroes) {
@@ -1019,7 +1440,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         names[88] = "Nyx Assassin";
         names[89] = "Naga Siren";
         names[90] = "Keeper of the Light";
-        names[91] = "Wisp";
+        names[91] = "Io";
         names[92] = "Visage";
         names[93] = "Slark";
         names[94] = "Medusa";
@@ -1135,7 +1556,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         subnames[88] = "NA";
         subnames[89] = "NS";
         subnames[90] = "Kotl";
-        subnames[91] = "Io Wisp";
+        subnames[91] = "Wisp";
         subnames[92] = "";
         subnames[93] = "";
         subnames[94] = "Dusa Gorgon";
@@ -1242,6 +1663,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (id == 107) {return 105;}
         if (id == 109) {return 106;}
         if (id == 110) {return 107;}
+        if (id == 111) {return 108;}
         if (id == 105) {return 109;}
         if (id == 112) {return 110;}
         if (id == 113) {return 111;}
@@ -1255,42 +1677,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         allied_heroes[1] = Ah_id2;
         allied_heroes[2] = Ah_id3;
         allied_heroes[3] = Ah_id4;
-        allied_heroes[4] = 0;
+        allied_heroes[4] = Ah_id5;
         enemy_heroes[0] = Eh_id1;
         enemy_heroes[1] = Eh_id2;
         enemy_heroes[2] = Eh_id3;
         enemy_heroes[3] = Eh_id4;
         enemy_heroes[4] = Eh_id5;
+
+        alliedIcons[0] = Ally1;
+        alliedIcons[1] = Ally2;
+        alliedIcons[2] = Ally3;
+        alliedIcons[3] = Ally4;
+        alliedIcons[4] = Ally5;
+        enemyIcons[0] = Enemy1;
+        enemyIcons[1] = Enemy2;
+        enemyIcons[2] = Enemy3;
+        enemyIcons[3] = Enemy4;
+        enemyIcons[4] = Enemy5;
+
     }
 
     //Methods for filtering the hero list
     public String reorder(boolean clicked) {
         String str ="";
-        count = count + 2;
-        if(count % 3 == 0){
-            Collections.sort(heroList, new CustomComparator());
+        count = count + 3;
+        if(count % 4 == 0){
+            if(user_stats) {
+                Collections.sort(heroList, new CustomComparator());
+            } else {
+                Collections.sort(heroList, new BaseComparator());
+            }
             str = "Win %";
             if(clicked){
                 Toast.makeText(getApplicationContext(), "Sorting by Win %",
                         Toast.LENGTH_SHORT).show();
             }
 
-        } else if(count % 3 == 1) {
+        } else if(count % 4 == 1) {
             Collections.sort(heroList, new DoubleComparator());
             str = "Advantage";
             if(clicked) {
                 Toast.makeText(getApplicationContext(), "Sorting by Advantage",
                         Toast.LENGTH_SHORT).show();
             }
-        } else if (count % 3 == 2) {
+        } else if (count % 4 == 2) {
             Collections.sort(heroList, new SynergyComparator());
             str = "Synergy";
             if(clicked) {
                 Toast.makeText(getApplicationContext(), "Sorting by Synergy",
                         Toast.LENGTH_SHORT).show();
             }
+        } else if (count % 4 == 3) {
+            Collections.sort(heroList, new SynergyAdvantageComparator());
+            str = "Adv + Syn";
+            if (clicked) {
+                Toast.makeText(getApplicationContext(), "Sorting by Advantage and Synergy",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
         mListView1.setAdapter(adapter);
+
         return str;
     }
 
@@ -1344,11 +1790,78 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             user_id = String.valueOf(0);
         }
 
+        if(!tables_loaded){
+            String advString = "Advantages";
+            String synString = "Synergies";
+            String vsEnemiesString = "Win_vs_enemies";
+            String withAlliesString = "Win_synergies";
+            String endString = "";
+            String middleString = "_n";
+            Log.d("PREF", preferences.getString("skill_setting_preference", "default_value"));
+            Log.d("PREF", preferences.getString("time_setting_preference", "default_value"));
+            if(preferences.getString("time_setting_preference", "default_value").equals("1")){
+                endString ="";
+            } else if(preferences.getString("time_setting_preference", "default_value").equals("2")){
+                endString ="_700";
+            } else {
+                endString ="";
+            }
+            if(preferences.getString("skill_setting_preference", "default_value").equals("1")) {
+                normal = true;
+                middleString = "_n";
+
+            } else if (preferences.getString("skill_setting_preference", "default_value").equals("2")) {
+                high = true;
+                middleString ="_h";
+            } else if (preferences.getString("skill_setting_preference", "default_value").equals("3")) {
+                veryHigh = true;
+                middleString = "_vh";
+            }
+            Win_vs_enemies_table = myDb.advantageTableBuilder(vsEnemiesString + middleString + endString);
+            Win_with_allies_table = myDb.advantageTableBuilder(withAlliesString + middleString + endString);
+            Advantage_table = myDb.advantageTableBuilder(advString + middleString + endString);
+            Synergy_table = myDb.advantageTableBuilder(synString + middleString + endString);
+            populationWinRates = sc.winRateArrayBuilder(Win_vs_enemies_table);
+            tables_loaded = true;
+            /*
+            if(preferences.getString("skill_setting_preference", "default_value").equals("1")) {
+                normal = true;
+                Advantage_table = myDb.advantageTableBuilder("Advantages_n");
+                Synergy_table = myDb.advantageTableBuilder("Synergies_n");
+                Win_vs_enemies_table = myDb.advantageTableBuilder("Win_vs_enemies_n");
+                Win_with_allies_table = myDb.advantageTableBuilder("Win_synergies_n");
+                populationWinRates = sc.winRateArrayBuilder(Win_vs_enemies_table);
+            } else if (preferences.getString("skill_setting_preference", "default_value").equals("2")) {
+                high = true;
+                Advantage_table = myDb.advantageTableBuilder("Advantages_h");
+                Synergy_table = myDb.advantageTableBuilder("Synergies_h");
+                Win_vs_enemies_table = myDb.advantageTableBuilder("Win_vs_enemies_h");
+                Win_with_allies_table = myDb.advantageTableBuilder("Win_synergies_h");
+                populationWinRates = sc.winRateArrayBuilder(Win_vs_enemies_table);
+            } else if (preferences.getString("skill_setting_preference", "default_value").equals("3")) {
+                veryHigh = true;
+                Advantage_table = myDb.advantageTableBuilder("Advantages_vh");
+                Synergy_table = myDb.advantageTableBuilder("Synergies_vh");
+                Win_vs_enemies_table = myDb.advantageTableBuilder("Win_vs_enemies_vh");
+                Win_with_allies_table = myDb.advantageTableBuilder("Win_synergies_vh");
+                populationWinRates = sc.winRateArrayBuilder(Win_vs_enemies_table);
+            }
+            */
+            Log.d("adv string", advString + middleString + endString);
+            Log.d("syn string", synString + middleString + endString);
+            Log.d("vs string", vsEnemiesString + middleString + endString);
+            Log.d("with string", withAlliesString + middleString + endString);
+        }
+
+
+
+        /*
         if(isParsable(preferences.getString("bayes_preference", "default_value"))){
             bayes_constant = Integer.parseInt(preferences.getString("bayes_preference", "default_value"));
         } else {
             bayes_constant = 3;
         }
+        */
     }
 
     private void clear(){
@@ -1371,6 +1884,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Ally2.setImageResource(0);
         Ally3.setImageResource(0);
         Ally4.setImageResource(0);
+        Ally5.setImageResource(0);
 
         hero_id = 0;
         Eh_id1 = 0;
@@ -1393,17 +1907,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setUpTeamAdvantagesAndSynergies();
 
-        mListView1.setAdapter(adapter);
-    }
+        has_started = false;
 
-    public static boolean isParsable(String input){
-        boolean parsable = true;
-        try{
-            Integer.parseInt(input);
-        }catch(NumberFormatException e){
-            parsable = false;
-        }
-        return parsable;
+        chosenHero = null;
+        loadData();
+
+        user_stats = true;
+
+        initiateHeroJsonRetrieval("0", Ally5, against_hero);
+
+        mListView1.setAdapter(adapter);
     }
 
     //Methods for parsing Json requests
@@ -1427,13 +1940,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return out;
     }
 
-}
 
 
 
 
-    /*
 
+
+    public static boolean isParsable(String input){
+        boolean parsable = true;
+        try{
+            Integer.parseInt(input);
+        }catch(NumberFormatException e){
+            parsable = false;
+        }
+        return parsable;
+    }
 
     public class JsonHeroTask extends AsyncTask<String, String, Map<Integer,List<Integer>>> {
 
@@ -1462,12 +1983,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line+"\n");
-                    Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
+                    //Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
 
                 }
 
                 JSONArray jsonArray = new JSONArray((buffer.toString()));
-                Map<Integer,List<Integer>> heroPopulationRates = parseArray(jsonArray);
+                heroPopulationRates = parseArray(jsonArray);
 
                 return heroPopulationRates;
 
@@ -1506,6 +2027,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         public Map<Integer,List<Integer>> parseArray(JSONArray json){
             Map<Integer, List<Integer>> out = new HashMap<>();
+
             for (int i = 0; i < json.length(); i++){
                 try {
                     Integer hero_id = json.getJSONObject(i).getInt("hero_id");
@@ -1519,22 +2041,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Integer fourk_wins = json.getJSONObject(i).getInt("4000_win");
                     Integer fivek_games = json.getJSONObject(i).getInt("5000_pick");
                     Integer fivek_wins = json.getJSONObject(i).getInt("5000_win");
-                    Integer total_wins = onek_wins+twok_wins+threek_wins+fourk_wins+fivek_wins;
-                    Integer total_games = onek_games+twok_games+threek_games+fourk_games+fivek_games;
+                    Integer total_wins = 0;
+                    Integer total_games = 0;
                     //Integer losses = games - wins;
                     List<Integer> winLoss = new ArrayList<>();
-                    winLoss.add(onek_wins);
-                    winLoss.add(onek_games);
-                    winLoss.add(twok_wins);
-                    winLoss.add(twok_games);
-                    winLoss.add(threek_wins);
-                    winLoss.add(threek_games);
-                    winLoss.add(fourk_wins);
-                    winLoss.add(fourk_games);
-                    winLoss.add(fivek_wins);
-                    winLoss.add(fivek_games);
+                    if(normal){
+                        total_wins = onek_wins+twok_wins;
+                        total_games = onek_games+twok_games;
+                        //Log.d("NORMAL", "HERE");
+                        //winLoss.add(onek_wins);
+                        //winLoss.add(onek_games);
+                        //winLoss.add(twok_wins);
+                        //winLoss.add(twok_games);
+                    } else if(high){
+                        total_wins = threek_wins;
+                        total_games = threek_games;
+                        //Log.d("HIGH", "HERE");
+                        //winLoss.add(threek_wins);
+                        //winLoss.add(threek_games);
+                    } else if(veryHigh) {
+                        total_wins = fourk_wins+fivek_wins;
+                        total_games = fourk_games+fivek_games;
+                        //Log.d("veryHIGH", "HERE");
+                        //winLoss.add(fourk_wins);
+                        //winLoss.add(fourk_games);
+                        //winLoss.add(fivek_wins);
+                        //winLoss.add(fivek_games);
+                    }
                     winLoss.add(total_wins);
                     winLoss.add(total_games);
+
                     out.put(hero_id,winLoss);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1545,10 +2081,151 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public static Map<Integer,List<Integer>> parseChosenArray(JSONArray json){
+        Map<Integer, List<Integer>> out = new HashMap<>();
+        for (int i = 0; i < json.length(); i++){
+            try {
+                Integer hero_id = json.getJSONObject(i).getInt("hero_id");
+                Integer wins = json.getJSONObject(i).getInt("with_win");
+                Integer games = json.getJSONObject(i).getInt("with_games");
+                Integer againstWins = json.getJSONObject(i).getInt("against_win");
+                Integer againstGames = json.getJSONObject(i).getInt("against_games");
+                List<Integer> winLoss = new ArrayList<>();
+                winLoss.add(wins);
+                winLoss.add(games);
+                winLoss.add(againstWins);
+                winLoss.add(againstGames);
+                out.put(hero_id,winLoss);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return out;
+    }
+
+    public Map<Integer,Double> getHeroWinRates(Map<Integer,List<Integer>> output){
+        heroPopulationRates = output;
+        Map<Integer, Double> populationWR = new HashMap<>();
+
+        for (int i = 1; i < hero_pool_size; i++){
+            if(i != 24){
+                //Log.d("HEROPOP", String.valueOf(heroPopulationRates));
+                double winRate = Double.valueOf(heroPopulationRates.get(i).get(0))/Double.valueOf(heroPopulationRates.get(i).get(1));
+                populationWR.put(i, winRate);
+            }
+
+        }
+
+        return populationWR;
+    }
+
     public void setHeroWinRates(){
         JsonHeroTask jsonTask = new JsonHeroTask();
         jsonTask.execute("https://api.opendota.com/api/heroStats");
     }
+
+    public void setChosenHeroWinRates(int ally5) {
+        JsonChosenTask jsonTask = new JsonChosenTask();
+        jsonTask.execute("https://api.opendota.com/api/players/47608793/heroes?hero_id=" + String.valueOf(ally5));
+        Log.d("URL", "https://api.opendota.com/api/players/47608793/heroes?hero_id=" + String.valueOf(ally5));
+    }
+
+    public class JsonChosenTask extends AsyncTask<String, String, Map<Integer,List<Integer>>> {
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Map<Integer, List<Integer>> doInBackground(String... params) {
+
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+
+            try {
+                URL url = new URL(params[0]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+
+                InputStream stream = connection.getInputStream();
+
+                reader = new BufferedReader(new InputStreamReader(stream));
+
+                StringBuffer buffer = new StringBuffer();
+                String line = "";
+
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line + "\n");
+                    //Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
+
+                }
+
+                JSONArray jsonArray = new JSONArray((buffer.toString()));
+                chosenHeroStats = parseChosenArray(jsonArray);
+
+                return chosenHeroStats;
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Map<Integer, List<Integer>> result) {
+            super.onPostExecute(result);
+
+            //getHeroWinRates(result);
+            //if (pd.isShowing()){
+            //    pd.dismiss();
+            //}
+            //  txtJson.setText(result);
+        }
+    }
+
+}
+
+
+
+
+    /*
+
+
+    private void shrinkBox() {
+        Configuration configuration = this.getResources().getConfiguration();
+        int screenWidthDp = configuration.screenWidthDp;
+        int screenHeightDp = configuration.screenHeightDp;
+        int smallestScreenWidthDp = configuration.smallestScreenWidthDp;
+        Enemy1.getLayoutParams().width = (int) screenHeightDp/6;
+        Enemy1.getLayoutParams().height = (int) 1.50*screenWidthDp/6;
+        Enemy2.getLayoutParams().width = (int) screenHeightDp/6;
+        Enemy2.getLayoutParams().height = (int) 1.50*screenWidthDp/6;
+        Enemy3.getLayoutParams().width = (int) screenHeightDp/6;
+        Enemy3.getLayoutParams().height = (int) 1.50*screenWidthDp/6;
+        Enemy4.getLayoutParams().width = (int) screenHeightDp/6;
+        Enemy4.getLayoutParams().height = (int) 1.50*screenWidthDp/6;
+        Enemy5.getLayoutParams().width = (int) screenHeightDp/6;
+        Enemy5.getLayoutParams().height = (int) 1.50*screenWidthDp/6;
+    }
+
     public static Map<String,String> parse(JSONObject json , Map<String,String> out) throws JSONException {
         Iterator<String> keys = json.keys();
 
@@ -1571,20 +2248,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-    public Map<Integer,Double> getHeroWinRates(Map<Integer,List<Integer>> output){
-        heroPopulationRates = output;
-
-        for (int i = 1; i < hero_pool_size; i++){
-            if(i != 24){
-                double winRate = Double.valueOf(heroPopulationRates.get(114).get(10))/Double.valueOf(heroPopulationRates.get(114).get(11));
-                populationWR.put(i, winRate);
-            }
-
-        }
-
-        return populationWR;
-    }
     */
 /*
     private int getCorrectId(int id) {

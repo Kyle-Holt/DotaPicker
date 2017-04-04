@@ -2,8 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_switch_mode"
+        android:icon="@drawable/ic_notifications_black"
+        android:title="@string/action_switch_mode"
+        app:showAsAction="always|withText"/>
+    <item
         android:id="@+id/menu_settings"
         android:orderInCategory="100"
         app:showAsAction="never"
         android:title="@string/menu_settings"/>
+    <item
+        android:id="@+id/menu_help"
+        android:orderInCategory="101"
+        app:showAsAction="never"
+        android:title="@string/menu_help"/>
+
+    <!--     <item
+        android:id="@+id/menu_credits"
+        android:orderInCategory="102"
+        app:showAsAction="never"
+        android:title="@string/menu_credits"/>-->
+
 </menu>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Dota Picker</string>
+    <string name="app_name">Insight for Dota 2</string>
     <string name="menu_home">Win %</string>
     <string name="menu_search">Reset</string>
     <string name="add_enemy">Add Enemy</string>
@@ -9,6 +9,9 @@
     <string name="ally">Allies</string>
     <string name="enemy">Enemies</string>
     <string name="menu_settings">Settings</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_credits">About</string>
+    <string name="action_switch_mode">Switch Mode</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -20,10 +23,9 @@
     <string name="enter_bayes_constant">How many games to learn a hero? (Default: 3)</string>
     <string name="enter_user_id">Enter your user ID</string>
     <string name="enter_user_id_subtext">Number in your open dota user page url</string>
-    <string name="user_id_option_text">Your Dota user ID</string>
+    <string name="user_id_option_text">Your Dota Account ID</string>
     <string name="role_selector">All Roles</string>
     <string name="user_id_header">User ID</string>
-
 
 
     <string name="title_checkbox_preference">title_checkbox</string>

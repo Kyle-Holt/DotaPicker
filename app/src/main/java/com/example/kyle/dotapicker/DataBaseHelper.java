@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -18,7 +19,7 @@ import static com.example.kyle.dotapicker.MainActivity.hero_pool_size;
 
 public class DataBaseHelper extends SQLiteAssetHelper {
 
-    private static final String DATABASE_NAME = "adv-syn2.db";
+    private static final String DATABASE_NAME = "adv-syn4.db";
     private static final String ENEMY_COL = "enemy_id";
     private static final String ID_COL = "hero_id";
     private static final String ADV_COL = "advantage";
@@ -48,42 +49,53 @@ public class DataBaseHelper extends SQLiteAssetHelper {
 
     public ArrayList<String> getRowAndDate(int col, String TABLE_NAME) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + " where " + ENEMY_COL + " = '" + col + "'", null);
-        cursor.moveToFirst();
-        ArrayList<String> names = new ArrayList<String>();
-        String array[] = new String[cursor.getCount()+1];
-        while(!cursor.isAfterLast()) {
-            names.add(cursor.getString(cursor.getColumnIndex(ADV_COL)));
-            cursor.moveToNext();
+        ArrayList<String> arrayList = new ArrayList<>();
+        try {
+            Cursor cursor = db.rawQuery("select * from " + TABLE_NAME + " where " + ENEMY_COL + " = '" + col + "'", null);
+            cursor.moveToFirst();
+            ArrayList<String> names = new ArrayList<String>();
+            String array[] = new String[cursor.getCount()+1];
+            while(!cursor.isAfterLast()) {
+                names.add(cursor.getString(cursor.getColumnIndex(ADV_COL)));
+                cursor.moveToNext();
+            }
+            cursor.close();
+            if(col < hero_pool_size-2) {
+                for(int j = 0; j< col-1; j++){
+                    array[j] = names.get(j);
+                }
+                array[col-1] = "0";
+                for(int j = col; j < array.length; j++){
+                    array[j] = names.get(j-1);
+                }
+            } else {
+                for(int j = 0; j< col-1; j++){
+                    array[j] = names.get(j);
+                }
+                array[hero_pool_size-3] = "0";
+            }
+            arrayList = new ArrayList<String>(Arrays.asList(array));
+        } catch(IndexOutOfBoundsException e) {
+            Log.d("EXCEPTION", "Index out of Bounds");
         }
-        cursor.close();
-        if(col < hero_pool_size-2) {
-            for(int j = 0; j< col-1; j++){
-                array[j] = names.get(j);
-            }
-            array[col-1] = "0";
-            for(int j = col; j < array.length; j++){
-                array[j] = names.get(j-1);
-            }
-        } else {
-            for(int j = 0; j< col-1; j++){
-                array[j] = names.get(j);
-            }
-            array[hero_pool_size-3] = "0";
-        }
-        ArrayList<String> arrayList = new ArrayList<String>(Arrays.asList(array));
         return arrayList;
     }
 
     public double[][] advantageTableBuilder(String TABLE_NAME) {
         SQLiteDatabase db = this.getWritableDatabase();
         double[][] names = new double[hero_pool_size][hero_pool_size];
-        for(int i = 1; i < hero_pool_size-1; i++) {
-            ArrayList<String> enemy_col = getRowAndDate(i, TABLE_NAME);
+        try {
+            for(int i = 1; i < hero_pool_size-1; i++) {
+                ArrayList<String> enemy_col = getRowAndDate(i, TABLE_NAME);
 
-            for(int j = 1; j < 114; j++) {
-                names[j][i] = Double.valueOf(enemy_col.get(j-1));
+                for(int j = 1; j < 114; j++) {
+                    if (!(j > enemy_col.size())){
+                        names[j][i] = Double.valueOf(enemy_col.get(j-1));
+                    }
+                }
             }
+        } catch(IndexOutOfBoundsException e) {
+            Log.d("EXCEPTION", "Index out of Bounds");
         }
         return names;
     }

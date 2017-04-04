@@ -34,6 +34,7 @@ import static com.example.kyle.dotapicker.MainActivity.Eh_id2;
 import static com.example.kyle.dotapicker.MainActivity.Eh_id3;
 import static com.example.kyle.dotapicker.MainActivity.Eh_id4;
 import static com.example.kyle.dotapicker.MainActivity.Eh_id5;
+import static com.example.kyle.dotapicker.MainActivity.chosenHero;
 import static com.example.kyle.dotapicker.MainActivity.hero_pool_size;
 import static com.example.kyle.dotapicker.MainActivity.images;
 import static com.example.kyle.dotapicker.MainActivity.names;
@@ -71,6 +72,8 @@ public class SearchActivity extends AppCompatActivity {
 
 
         heroArrayList.removeAll(dupeHeroList);
+        heroArrayList.remove(chosenHero);
+        //if that checks heroArrayList is not null?
         Collections.sort(heroArrayList, new Comparator<Hero>() {
             @Override
             public int compare(final Hero object1, final Hero object2) {

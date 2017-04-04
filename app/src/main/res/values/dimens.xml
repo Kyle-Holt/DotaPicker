@@ -7,7 +7,7 @@
     <dimen name="box_width_medium" format="float">53.3dp</dimen>
     <dimen name="box_height_medium" format="float">29.9dp</dimen>
     <dimen name="box_width_large" format="float">80dp</dimen>
-    <dimen name="box_height_large" format="float">44.8dp</dimen>
+    <dimen name="box_height_large" format="float">46dp</dimen>
     <dimen name="hero_name">10dip</dimen>
     <dimen name="total_rating">13dip</dimen>
     <dimen name="fab_margin">16dp</dimen>

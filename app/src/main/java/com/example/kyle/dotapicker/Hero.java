@@ -17,6 +17,8 @@ public class Hero {
     private double synergy;
     private double bayesWR;
     private double bayesLR;
+    private double unbiasedAlliedWR;
+    private double unbiasedEnemyWR;
 
     public Hero(){
     }
@@ -27,7 +29,7 @@ public class Hero {
         this.total = total;
     }
 
-    public Hero(String name, int icon, int id, Double total, Double ally, Double enemy, Double adv, Double syn, Double bayesWR, Double bayesLR) {
+    public Hero(String name, int icon, int id, Double total, Double ally, Double enemy, Double adv, Double syn, Double bayesWR, Double bayesLR, Double unbiasedAlliedWR, Double unbiasedEnemyWR) {
         this.name = name;
         this.icon = icon;
         this.id = id;
@@ -38,6 +40,18 @@ public class Hero {
         this.synergy = syn;
         this.bayesWR = bayesWR;
         this.bayesLR = bayesLR;
+        this.unbiasedAlliedWR = unbiasedAlliedWR;
+        this.unbiasedEnemyWR = unbiasedEnemyWR;
+    }
+
+    public Hero(String name, int image, int id, Double bayesWR, Double bayesLR, Double unbiasedAlliedWR, Double unbiasedEnemyWR){
+        this.name = name;
+        this.icon = image;
+        this.id = id;
+        this.bayesWR = bayesWR;
+        this.bayesLR = bayesLR;
+        this.unbiasedEnemyWR = unbiasedEnemyWR;
+        this.unbiasedAlliedWR = unbiasedAlliedWR;
     }
 
     public Hero(String name, int image, int id, String subnames) {
@@ -117,6 +131,10 @@ public class Hero {
     public double getBayesEnemyWR(){
         return bayesLR;
     }
+
+    public double getUnbiasedAlliedWR() { return unbiasedAlliedWR;}
+
+    public double getUnbiasedEnemyWR() { return unbiasedEnemyWR;}
 
     @Override
     public boolean equals(Object anObject) {

@@ -1,5 +1,7 @@
 package com.example.kyle.dotapicker;
 
+import android.util.Log;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +45,13 @@ public class StatsCalculator {
         for(int i = 1; i < hero_pool_size; i++){
             if(!Arrays.asList(exclude).contains(i)){
                 hero_array[i][hero_id] = map.get(i);
+                /*
+                if(hero_id != 0) {
+                    hero_array[i][hero_id] = map.get(i);
+                } else {
+                    hero_array[i][0] = map.get(i);
+                }
+                */
             }
         }
         return hero_array;
@@ -74,6 +83,19 @@ public class StatsCalculator {
         double[][] hero_array = mapToList(heroMap, hero_id);
 
         return hero_array;
+    }
+
+    public double[] winRateArrayBuilder(double[][] winRateTable){
+        double[] populationWinRate = new double[hero_pool_size];
+        for(int i = 1; i < hero_pool_size -1; i++) {
+            double sum = 0;
+            for(int j = 1; j < hero_pool_size - 1; j++) {
+                sum += winRateTable[i][j];
+            }
+            populationWinRate[i] = sum/114;
+            Log.d("popWR", String.valueOf(populationWinRate[i]));
+        }
+        return populationWinRate;
     }
 
 }

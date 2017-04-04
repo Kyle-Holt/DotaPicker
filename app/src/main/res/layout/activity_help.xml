@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_help"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.kyle.dotapicker.HelpActivity">
+
+    <TextView
+        android:text="Help"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/hero_name"
+        android:textStyle="bold"
+        android:id="@+id/help_header" />
+
+    <TextView
+        android:text="Insight for Dota 2 is a drafting assistant app for Valve's game Dota 2. Unlike other apps of its type, Insight for Dota 2 ranks the choices for your hero not only by synergy with your team and strength against the enemy team, but also by how well you play each hero. It gets this information from your match history, using the api of openDota.com."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/help_header"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="14dp"
+        android:id="@+id/paragraph1" />
+
+    <TextView
+        android:text="Your hero slot is on the bottom right in green. Select heroes for your team on the bottom in green and the enemy team on the top in red and the app will automatically calculate all the relevant statistics for both teams as well as your hero options."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/paragraph1"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="19dp"
+        android:id="@+id/paragraph2" />
+
+    <TextView
+        android:text="You can change the sorting of your hero suggestions or the roles that are shown with the buttons at the bottom of the screen. Add other heroes with the bottom buttons or by tapping on a slot at the top. Tap the icon at the top of the screen to alternate between your statistics and population statistics. Tap a chosen hero to change it. Long tap a hero to remove them. Tap any of the suggested heroes in the main list to pick your hero and see the team totals update. Tap the hero in your hero slot to remove them."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/paragraph2"
+        android:layout_alignEnd="@+id/paragraph2"
+        android:layout_marginTop="20dp"
+        android:id="@+id/paragraph3" />
+</RelativeLayout>

@@ -5,12 +5,12 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.example.kyle.dotapicker"
+        applicationId "com.holt.kyle.dotainsight"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionName '1.22'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode 5
     }
     buildTypes {
         release {
@@ -18,12 +18,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 
 
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -35,6 +37,5 @@ dependencies {
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
     compile 'ch.acra:acra:4.9.0'
     compile 'com.google.firebase:firebase-crash:10.2.0'
-
     testCompile 'junit:junit:4.12'
 }

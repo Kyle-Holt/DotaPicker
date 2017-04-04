@@ -19,16 +19,27 @@
         <item>7</item>
     </string-array>
 
-    <string-array name="boxsizevalues_list_preference">
-        <item>Small</item>
-        <item>Medium</item>
-        <item>Large</item>
+    <string-array name="skillvalues_list_preference">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
 
     </string-array>
-    <string-array name="boxsize_list_preference">
-        <item>Small</item>
-        <item>Medium</item>
-        <item>Large</item>
+    <string-array name="skill_list_preference">
+        <item>Normal</item>
+        <item>High</item>
+        <item>Very High</item>
+
+    </string-array>
+
+    <string-array name="timevalues_list_preference">
+        <item>1</item>
+        <item>2</item>
+
+    </string-array>
+    <string-array name="time_list_preference">
+        <item>Last Month</item>
+        <item>Since 7.00</item>
 
     </string-array>
 </resources>

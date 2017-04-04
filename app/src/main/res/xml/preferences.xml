@@ -12,11 +12,59 @@
             android:key="edittext_preference"
             android:title="@string/user_id_option_text"
             android:inputType="number"
-            android:defaultValue="0"
-            android:summary=""
+            android:defaultValue=""
+            android:summary="Your ID number from OpenDota or Dotabuff goes here"
             android:dialogTitle="@string/enter_user_id" />
 
+    </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Skill and Time Settings for Population Statistics">
+
+        <ListPreference
+            android:key="skill_setting_preference"
+            android:title="Skill Bracket"
+            android:dialogTitle="Please select your skill bracket"
+            android:summary="%s"
+            android:defaultValue="1"
+            android:entries="@array/skill_list_preference"
+            android:entryValues="@array/skillvalues_list_preference" />
+
+        <ListPreference
+            android:key="time_setting_preference"
+            android:title="Time Frame"
+            android:dialogTitle="Please select desired time frame"
+            android:summary="%s"
+            android:defaultValue="1"
+            android:entries="@array/time_list_preference"
+            android:entryValues="@array/timevalues_list_preference" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="UI Settings">
+
+        <CheckBoxPreference
+            android:key="pref_short_text"
+            android:title="Short Text Mode"
+            android:summary="Requires app restart. Use only if current layout does not fit. May not be centered."
+            android:defaultValue="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="About">
+
+        <Preference
+            android:key="about"
+            android:title="Contact"/>
+
+    </PreferenceCategory>
+        <!--booleans/short box mode/short text mode-->
+
+
+
+ <!--
 
     </PreferenceCategory>
 
@@ -33,10 +81,11 @@
             android:entryValues="@array/entryvalues_list_preference" />
 
 
-    </PreferenceCategory>
 
 
- <!--   <PreferenceCategory
+
+
+ <PreferenceCategory
         android:title="@string/title_second_section">
 
     <PreferenceCategory

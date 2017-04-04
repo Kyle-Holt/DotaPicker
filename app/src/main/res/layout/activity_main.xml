@@ -5,11 +5,13 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#d3d3d3"
 
     tools:context="com.example.kyle.dotapicker.MainActivity"
     >
 <!--<item
     android:id="@+id/action_search"
+    android:background="#d3d3d3"
     android:icon="@android:drawable/ic_menu_search"
     app:showAsAction="always"
     app:actionViewClass="android.support.v7.widget.SearchView"
@@ -27,14 +29,6 @@
         app:itemTextColor="@color/white"
         app:menu="@menu/bottom_nav_items" />
 
-    <ImageView
-        android:layout_width="@dimen/box_width_large"
-        android:layout_height="@dimen/box_height_large"
-        android:background="@drawable/black_border"
-        android:layout_alignBottom="@+id/enemy4"
-        android:layout_toEndOf="@+id/enemy4"
-        android:id="@+id/enemy5" />
-
     <!--for custom listveiw
     <ScrollView
         android:layout_width="wrap_content"
@@ -45,7 +39,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ally1"
+            android:layout_below="@+id/list_color"
             android:layout_above="@+id/bottom_navigation" >
 
 
@@ -54,12 +48,11 @@
                 android:id="@+id/listView1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dip"
                 android:scrollbars="vertical"
                 android:background="@color/white" >
             </ListView>
 
-
+        </LinearLayout>
            <!--<TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -78,13 +71,15 @@
                 android:layout_marginTop="10dip"
                 android:background="#4A9C67" >
             </ListView>-->
-        </LinearLayout>
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="18dp"
         android:text="@string/enemy"
         android:textSize="15dp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
         android:id="@+id/Enemy_text"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
@@ -94,6 +89,8 @@
         android:layout_height="18dp"
         android:text="@string/ally"
         android:textSize="15dp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
         android:id="@+id/Ally_text"
         android:layout_below="@+id/enemy1"
         android:layout_alignParentStart="true" />
@@ -101,7 +98,15 @@
     <ImageView
         android:layout_width="@dimen/box_width_large"
         android:layout_height="@dimen/box_height_large"
-        android:background="@drawable/black_border"
+        android:background="@drawable/foe_border"
+        android:layout_alignBottom="@+id/enemy4"
+        android:layout_toEndOf="@+id/enemy4"
+        android:id="@+id/enemy5" />
+
+    <ImageView
+        android:layout_width="@dimen/box_width_large"
+        android:layout_height="@dimen/box_height_large"
+        android:background="@drawable/foe_border"
         android:layout_below="@id/Enemy_text"
         android:id="@+id/enemy1"
         android:layout_toStartOf="@+id/enemy2" />
@@ -109,7 +114,7 @@
     <ImageView
         android:layout_width="@dimen/box_width_large"
         android:layout_height="@dimen/box_height_large"
-        android:background="@drawable/black_border"
+        android:background="@drawable/your_border"
         android:id="@+id/ally1"
         android:layout_below="@+id/Ally_text"
         android:layout_toStartOf="@+id/ally2" />
@@ -117,7 +122,7 @@
     <ImageView
         android:layout_width="@dimen/box_width_large"
         android:layout_height="@dimen/box_height_large"
-        android:background="@drawable/black_border"
+        android:background="@drawable/your_border"
         android:id="@+id/ally2"
         android:layout_alignTop="@+id/ally1"
         android:layout_toStartOf="@+id/ally3" />
@@ -125,7 +130,7 @@
     <ImageView
         android:layout_width="@dimen/box_width_large"
         android:layout_height="@dimen/box_height_large"
-        android:background="@drawable/black_border"
+        android:background="@drawable/your_border"
         android:id="@+id/ally3"
         android:layout_alignTop="@+id/ally2"
         android:layout_toEndOf="@+id/enemy2" />
@@ -141,7 +146,7 @@
     <ImageView
         android:layout_width="@dimen/box_width_large"
         android:layout_height="@dimen/box_height_large"
-        android:background="@drawable/black_border"
+        android:background="@drawable/your_border"
         android:id="@+id/ally4"
         android:layout_alignTop="@+id/ally3"
         android:layout_toEndOf="@+id/ally3" />
@@ -149,7 +154,7 @@
     <ImageView
         android:layout_width="@dimen/box_width_large"
         android:layout_height="@dimen/box_height_large"
-        android:background="@drawable/black_border"
+        android:background="@drawable/foe_border"
         android:id="@+id/enemy2"
         android:layout_alignTop="@+id/enemy1"
         android:layout_toStartOf="@+id/enemy3" />
@@ -157,7 +162,7 @@
     <ImageView
         android:layout_width="@dimen/box_width_large"
         android:layout_height="@dimen/box_height_large"
-        android:background="@drawable/black_border"
+        android:background="@drawable/foe_border"
         android:id="@+id/enemy3"
         android:layout_alignTop="@+id/enemy2"
         android:layout_centerHorizontal="true" />
@@ -165,7 +170,7 @@
     <ImageView
         android:layout_width="@dimen/box_width_large"
         android:layout_height="@dimen/box_height_large"
-        android:background="@drawable/black_border"
+        android:background="@drawable/foe_border"
         android:id="@+id/enemy4"
         android:layout_alignTop="@+id/enemy3"
         android:layout_toEndOf="@+id/enemy3" />
@@ -178,7 +183,8 @@
         android:textSize="15dp"
         android:id="@+id/allied_advantage"
         android:layout_below="@+id/enemy3"
-        android:layout_toEndOf="@+id/enemy2"/>
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -187,7 +193,8 @@
         android:id="@+id/allied_synergy"
         android:layout_below="@+id/enemy5"
         android:layout_toEndOf="@+id/enemy3"
-        android:paddingLeft="50dp"/>
+        android:textColor="@android:color/black"
+        android:paddingLeft="25dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -196,7 +203,8 @@
         android:id="@+id/allied_win"
         android:layout_below="@+id/enemy5"
         android:layout_toRightOf="@+id/Ally_text"
-        android:paddingLeft="35dp"/>
+        android:textColor="@android:color/black"
+        android:paddingLeft="30dp"/>
 
 
     <!--enemy team synergy and advantage-->
@@ -204,9 +212,10 @@
         android:layout_width="wrap_content"
         android:layout_height="18dp"
         android:textSize="15dp"
+        android:layout_centerHorizontal="true"
         android:id="@+id/enemy_advantage"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/enemy2" />
+        android:textColor="@android:color/black" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -215,7 +224,8 @@
         android:id="@+id/enemy_synergy"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/enemy3"
-        android:paddingLeft="50dp" />
+        android:textColor="@android:color/black"
+        android:paddingLeft="25dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -223,9 +233,164 @@
         android:textSize="15dp"
         android:id="@+id/enemy_win"
         android:layout_toRightOf="@+id/Enemy_text"
-        android:paddingLeft="15dp"/>
+        android:textColor="@android:color/black"
+        android:paddingLeft="10dp"/>
 
-    <!--android:layout_alignEnd="@+id/test_text2"</ScrollView>-->
+    <!--listview header-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:id="@+id/list_color"
+        android:layout_below="@+id/ally1"
+        android:background="@color/white"
+        android:textStyle="bold"
+        android:paddingLeft="1dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:textSize="10dp"
+        android:id="@+id/list_hero"
+        android:text="Hero"
+        android:layout_below="@+id/ally1"
+        android:textStyle="bold"
+        android:paddingLeft="5dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:textSize="10dp"
+        android:id="@+id/list_name"
+        android:text="Name"
+        android:layout_below="@+id/ally2"
+        android:layout_toEndOf="@+id/list_hero"
+        android:textStyle="bold"
+        android:paddingLeft="20dp"
+        android:textColor="@color/white"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:textSize="10dp"
+        android:id="@+id/list_total"
+        android:text="Total"
+        android:layout_below="@+id/ally2"
+        android:layout_toEndOf="@+id/list_name"
+        android:textStyle="bold"
+        android:paddingLeft="20dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:textSize="10dp"
+        android:id="@+id/list_with_allies"
+        android:text="with Allies"
+        android:layout_below="@+id/ally2"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:paddingRight="9dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:textSize="10dp"
+        android:id="@+id/list_with_enemies"
+        android:text="versus Enemies"
+        android:layout_below="@+id/ally2"
+        android:layout_alignParentRight="true"
+        android:textStyle="bold"
+        android:paddingRight="20dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+
+
+    <!--android:layout_alignEnd="@+id/test_text2"
+
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:id="@+id/list_color"
+        android:layout_below="@+id/ally1"
+        android:background="@color/white"
+        android:textStyle="bold"
+        android:paddingLeft="1dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:textSize="10dp"
+        android:id="@+id/list_hero"
+        android:text="Hero"
+        android:layout_below="@+id/ally1"
+        android:textStyle="bold"
+        android:paddingLeft="5dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:textSize="10dp"
+        android:id="@+id/list_name"
+        android:text="Name"
+        android:layout_below="@+id/ally2"
+        android:layout_toEndOf="@+id/list_hero"
+        android:textStyle="bold"
+        android:paddingLeft="5dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:textSize="10dp"
+        android:id="@+id/list_total"
+        android:text="Total"
+        android:layout_below="@+id/ally2"
+        android:layout_toEndOf="@+id/list_name"
+        android:textStyle="bold"
+        android:paddingLeft="5dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:textSize="10dp"
+        android:id="@+id/list_with_allies"
+        android:text="with Allies"
+        android:layout_below="@+id/ally2"
+        android:layout_toEndOf="@+id/list_total"
+        android:textStyle="bold"
+        android:paddingLeft="5dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:textSize="10dp"
+        android:id="@+id/list_with_enemies"
+        android:text="versus Enemies"
+        android:layout_below="@+id/ally2"
+        android:layout_alignParentRight="true"
+        android:textStyle="bold"
+        android:paddingRight="5dp"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"/></ScrollView>-->
 
 
 </RelativeLayout>

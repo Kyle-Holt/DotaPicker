@@ -933,7 +933,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(getApplicationContext(), "Data not loaded correctly, attempting to reload.",
                     Toast.LENGTH_SHORT).show();
             reload_table_count += 1;
-            if(reload_table_count < 3) {
+            if(reload_table_count < 2) {
                 tables_loaded = false;
                 clear();
             } else {
